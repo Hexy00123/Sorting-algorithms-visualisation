@@ -1,16 +1,21 @@
 from pprint import pprint
+
+import pygame.display
+
 from BubbleSort import BubbleSort
 from QuickSort import QuickSort
-from random import randint
+from random import shuffle
 import pygame as pg
 from config import *
 from time import sleep
+from visualisation_types import *
 
 if __name__ == '__main__':
     pg.init()
     screen = pg.display.set_mode(SCREEN_SIZE)
-
-    array = QuickSort([randint(3, SCREEN_SIZE[1]) for _ in range(NUMBER_OF_ELEMENTS)])
+    array = list(range(1, NUMBER_OF_ELEMENTS + 1))
+    shuffle(array)
+    array = QuickSort(array)
     steps = array.sort()
     running = True
     is_ended = False
@@ -22,21 +27,11 @@ if __name__ == '__main__':
         if steps:
             step = steps.pop(0)
             screen.fill((0, 0, 0))
-            for ind, el in enumerate(step[0]):
-                color = step[1][ind] if ind in step[1] else (255, 255, 255)
-                pg.draw.rect(screen, color,
-                             (ind * WIDTH, SCREEN_SIZE[1] - el, WIDTH, SCREEN_SIZE[1]))
-                pg.draw.rect(screen, (0, 0, 0),
-                             (ind * WIDTH, SCREEN_SIZE[1] - el, WIDTH, SCREEN_SIZE[1]), 1)
-            sleep(0.02)
+            step_as_spiral(screen, step)
+            sleep(0.02/20)
+
         elif not is_ended:
-            for ind, el in enumerate(array):
-                pg.draw.rect(screen, (0, 127, 0),
-                             (ind * WIDTH, SCREEN_SIZE[1] - el, WIDTH, SCREEN_SIZE[1]))
-                pg.draw.rect(screen, (0, 0, 0),
-                             (ind * WIDTH, SCREEN_SIZE[1] - el, WIDTH, SCREEN_SIZE[1]), 1)
-                pg.display.flip()
-                sleep(0.01)
+            ending_as_spiral(screen, array, pg.display)
             is_ended = True
 
-        pg.display.flip()
+        pygame.display.flip()
